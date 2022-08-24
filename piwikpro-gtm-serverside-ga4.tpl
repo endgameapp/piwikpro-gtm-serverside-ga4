@@ -166,17 +166,16 @@ const eventData = getAllEventData();
 // Parse custom dimensions from the dimension event object
 // Builds a string with new params for the Piwik PRO tracking request
 const parseCustomDimensions = (eventData, dimensionMappings) => {
-  const gaDimensions = eventData.dimension;
   let dimensionParams = [];
 
   // Adds custom dimensions based on the mappings
   dimensionMappings.forEach((mapping) => {
     // Only sends the dimensions from the mapping that are available in the event
-    if (typeof gaDimensions[mapping.gaDimensionID] !== "undefined") {
+    if (typeof eventData[mapping.gaDimensionID] !== "undefined") {
       dimensionParams.push('&dimension' + 
                            mapping.ppDimensionID + 
                            '=' + 
-                           gaDimensions[mapping.gaDimensionID]);
+                           eventData[mapping.gaDimensionID]);
     } else {
       logToConsole(
         'Custom dimension (ID: ' + mapping.gaDimensionID + ') was not sent with the event.'
@@ -201,7 +200,7 @@ const parseDiscount = (items) => {
 const parseItems = (items) => {
   var parsedItems = [];
   items.forEach(item => {
-    let reformattedItem = [];
+		let reformattedItem = [];
     reformattedItem.push(item.item_id);
     reformattedItem.push(item.item_name);
 
