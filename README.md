@@ -14,7 +14,7 @@ A tag template for Piwik Pro server-side tracking inside Google Tag Manager with
 ## How to configure the tag
 Coming soon...
 
-## Supported events
+## Supported GA4 events
 1. page_view: generic page view events
 2. purchase: ecommerce transactions
 
