@@ -3,7 +3,7 @@ A tag template for Piwik Pro server-side tracking inside Google Tag Manager with
 
 ## How to implement the tag
 1. Go to your Google Tag Manager server-side container
-2. Import the tag template file in this repo at: Templates -> Tagtemplates -> New -> Import (under ... in top right menu)
+2. Import the [tag template file](https://github.com/endgameapp/piwikpro-gtm-serverside/blob/main/piwikpro-gtm-serverside-ga4.tpl) in this repo at: Templates -> Tagtemplates -> New -> Import (under ... in top right menu)
 3. Save the tag template
 4. Go to Tags -> New -> Piwik Pro server-side (GA4-based)
 5. Configure the tag
