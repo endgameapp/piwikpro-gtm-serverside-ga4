@@ -46,6 +46,7 @@ Coming soon...
 5. [A complete guide to server-side tagging](https://www.simoahava.com/analytics/server-side-tagging-google-tag-manager/)
 
 ## TODO list
+Coming soon...
 
 ## Support with server-side tagging
 In case you need professional help with setting up server-side tagging inside Google Tag Manager you can [contact me here](https://dennisvreeke.com).
