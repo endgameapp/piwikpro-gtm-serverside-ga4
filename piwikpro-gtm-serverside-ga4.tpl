@@ -257,7 +257,7 @@ const buildRequest = (eventData) => {
     requestPath += '&uia=1';
   }
 
-  if (data.visitorID != '') {
+  if (data.visitorID != '' && typeof(data.visitorID) != "undefined") {
     requestPath += '&_id=' + data.visitorID;
   }
   
