@@ -17,6 +17,8 @@ Coming soon...
 ## Supported GA4 events
 1. page_view: generic page view events
 2. purchase: ecommerce transactions
+3. scroll: scroll depth of the page
+4. user_engagement: user engagement time in seconds
 
 ## More resources
 1. [Piwik Pro HTTP API](https://developers.piwik.pro/en/latest/data_collection/api/http_api.html)
