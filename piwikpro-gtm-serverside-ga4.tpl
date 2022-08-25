@@ -156,6 +156,7 @@ const sendHttpGet = require('sendHttpGet');
 const encodeUriComponent = require('encodeUriComponent');
 const logToConsole = require('logToConsole');
 const JSON = require('JSON');
+const Math = require('Math');
 
 // Get the name of the tagging client used
 const clientName = getClientName();
@@ -231,13 +232,19 @@ const buildRequest = (eventData) => {
   const requestEndpoint = data.useDefaultEndpoint ? 'ppms.php' : data.customEndpoint;
   
   // Add common tracking request parameters (that won't change regardless of the event type)
+  const page_location = eventData.hasOwnProperty('page_location') ? '&url=' + encodeUriComponent(eventData.page_location) : '';
+  const ip_override = eventData.hasOwnProperty('ip_override') ? '&cip=' + encodeUriComponent(eventData.ip_override) : '';
+  const user_agent = eventData.hasOwnProperty('user_agent') ? '&ua=' + encodeUriComponent(eventData.user_agent) : '';
+  const screen_resolution = eventData.hasOwnProperty('screen_resolution') ? '&res=' + encodeUriComponent(eventData.screen_resolution) : '';
+  const page_referrer = eventData.hasOwnProperty('page_referrer') ? '&urlref=' + encodeUriComponent(eventData.page_referrer) : '';
   let requestPath = requestEndpoint + '?' +
         'rec=1' + '&' +
         'idsite=' + encodeUriComponent(data.siteID) + '&' +
-        'url=' + encodeUriComponent(eventData.page_location) + '&' +
-        'cip=' + encodeUriComponent(eventData.ip_override) + '&' +
-        'ua=' + encodeUriComponent(eventData.user_agent) + '&' +
-        'res=' + encodeUriComponent(eventData.screen_resolution);
+        page_location +
+        ip_override +
+        user_agent +
+        screen_resolution +
+        page_referrer;
   
   if (data.anonymousTracking == true) {
     requestPath += '&uia=1';
@@ -251,69 +258,90 @@ const buildRequest = (eventData) => {
   // Add additional parameters specific to particular event types
   switch (eventType) {
     // PageView / GA4: page_view
-    case 'page_view':
+    case 'page_view': {
       return requestPath + '&' +
         'action_name=' + encodeUriComponent(eventData.page_title);
+    }
     
     // OrderCompleted / GA4: purchase
-    case 'purchase':
-      const subtotal = eventData.hasOwnProperty('shipping') ? eventData.value - eventData.shipping : eventData.value;
-      const tax = eventData.hasOwnProperty('tax') ? eventData.tax : null;
-      const shipping = eventData.hasOwnProperty('shipping') ? eventData.shipping : null;
+    case 'purchase': {
+      const value = eventData.hasOwnProperty('value') ? encodeUriComponent(eventData.value) : 0;
+      const tax = eventData.hasOwnProperty('tax') ? encodeUriComponent(eventData.tax) : 0;
+      const shipping = eventData.hasOwnProperty('shipping') ? encodeUriComponent(eventData.shipping) : 0;
+      const subtotal = value - shipping;
       const discount = parseDiscount(eventData.items);
       const items = parseItems(eventData.items);
       return requestPath + '&' +
         'idgoal=0' + '&' +
-        'revenue=' + encodeUriComponent(eventData.value) + '&' +
+        'revenue=' + value + '&' +
         'ec_id=' + encodeUriComponent(eventData.transaction_id) + '&' +
-        'ec_st=' + encodeUriComponent(subtotal) + '&' +
-        'ec_tx=' + encodeUriComponent(tax) + '&' +
-        'ec_sh=' + encodeUriComponent(shipping) + '&' +
+        'ec_st=' + subtotal + '&' +
+        'ec_tx=' + tax + '&' +
+        'ec_sh=' + shipping + '&' +
         'ec_dt=' + encodeUriComponent(discount) + '&' +
         'ec_items=' + encodeUriComponent(items);
+    }
     /*
+    // CartUpdated / GA4: add_to_cart
+    case 'add_to_cart': {
+        const items = parseItems(eventData.items);
+        return requestPath + '&' +
+        'idgoal=0' + '&' +
+        'ec_items=' + encodeUriComponent(items);
+    }
+
+    // ContentImpression / GA4: view_item
+    case 'view_item': {
+        const items = parseItems(eventData.items);
+        return requestPath + '&' +
+        'action_name=' + encodeUriComponent(eventData.page_title) + '&' +
+        'ec_items=' + encodeUriComponent(items); 
+    }
+    */
+          /*
     // Search / GA4: search
     case 'search':
         return requestPath; 
-      break;
-
-    // CartUpdated / GA4: add_to_cart
-    case 'add_to_cart':
-        return requestPath; 
-      break;
-
+    
     // ContentInteraction / GA4: select_item
     case 'select_item':
         return requestPath; 
-      break;
-
-    // ContentImpression / GA4: view_item
-    case 'view_item':
-        return requestPath; 
-      break;
 
     // Outlink / GA4: click & outbound=true
     case 'click':
         return requestPath; 
-      break;
 
     // Download / GA4: click
     case 'click':
         return requestPath; 
-      break;
 
     // GoalConversion / GA4: 
     case '':
         return requestPath; 
-      break;
     */
-    // Custom / GA4: [anything else]
-    // Custom events the same event type as the event action parameter
-    case eventData.event_action:
+
+    // Exclude the default GA4 user_engagement & scroll action
+    case 'user_engagement':
+      const engagement_time_msec = eventData.hasOwnProperty('engagement_time_msec') ? Math.round(eventData.engagement_time_msec / 1000) + ' second' : null;
       return requestPath + '&' +
-        'e_c=' + encodeUriComponent(eventData.event_category) + '&' +
-        'e_a=' + encodeUriComponent(eventData.event_action) + '&' +
-        'e_n=' + encodeUriComponent(eventData.event_label);
+        'e_c=' + encodeUriComponent('ga4 user engagement') + '&' +
+        'e_a=' + encodeUriComponent(engagement_time_msec);
+    
+    case 'scroll':
+      const percent_scrolled = eventData.hasOwnProperty('percent_scrolled') ? eventData.percent_scrolled + '%' : null;
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ga4 page scroll') + '&' +
+        'e_a=' + encodeUriComponent(percent_scrolled);
+    
+    // Custom / GA4: [anything else]
+    case eventData.event_name: {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const event_name = eventData.hasOwnProperty('event_name') ? eventData.event_name : null;
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ga4 events') + '&' +
+        'e_a=' + encodeUriComponent(event_name) + 
+        value;
+    }
   }
 };
 
