@@ -294,72 +294,17 @@ const buildRequest = (eventData) => {
         'ec_dt=' + encodeUriComponent(discount) + '&' +
         'ec_items=' + encodeUriComponent(items);
     }
-    /*
-    // CartUpdated / GA4: add_to_cart
-    case 'add_to_cart': {
-        const items = parseItems(eventData.items);
-        return requestPath + '&' +
-        'idgoal=0' + '&' +
-        'ec_items=' + encodeUriComponent(items);
-    }
-
-    // ContentImpression / GA4: view_item
-    case 'view_item': {
-        const items = parseItems(eventData.items);
-        return requestPath + '&' +
-        'action_name=' + encodeUriComponent(eventData.page_title) + '&' +
-        'ec_items=' + encodeUriComponent(items); 
-    }
-
-    // Search / GA4: search
-    case 'search':
-        return requestPath; 
-    
-    // ContentInteraction / GA4: select_item
-    case 'select_item':
-        return requestPath; 
-
-    case 'select_content':
-        return requestPath; 
-    
-    case 'select_promotion':
-        return requestPath; 
-  
-    case 'view_cart':
-        return requestPath; 
-  
-    case 'view_item_list':
-        return requestPath; 
-
-    case 'view_promotion':
-        return requestPath; 
-
-      case 'begin_checkout':
-        return requestPath; 
-
-    // GoalConversion / GA4: 
-    case 'goalconversion':
-        return requestPath; 
-    */
 
     // Custom / GA4: click
     case 'click': {
-      const link_text = eventData.hasOwnProperty('link_text') ? eventData.link_text : '(link_text not set)';
-      const link_url = eventData.hasOwnProperty('link_url') ? '&e_n=' + encodeUriComponent(eventData.link_url) : '';
       return requestPath + '&' +
-        'e_c=' + encodeUriComponent('click') + '&' +
-        'e_a=' + encodeUriComponent(link_text) +
-        link_url;
+        'link=' + encodeUriComponent(eventData.link_url);
     }
 
     // Custom / GA4: file_download
     case 'file_download': {
-      const link_text = eventData.hasOwnProperty('link_text') ? eventData.link_text : '(link_text not set)';
-      const link_url = eventData.hasOwnProperty('link_url') ? '&e_n=' + encodeUriComponent(eventData.link_url) : '';
       return requestPath + '&' +
-        'e_c=' + encodeUriComponent('file_download') + '&' +
-        'e_a=' + encodeUriComponent(link_text) +
-        link_url;
+        'download=' + encodeUriComponent(eventData.link_url);
     }
 
     // Custom / GA4: add_payment_info
