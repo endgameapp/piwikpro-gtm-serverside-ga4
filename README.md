@@ -16,6 +16,14 @@ A tag template for Piwik Pro server-side tracking inside Google Tag Manager with
 2. purchase: ecommerce transactions
 3. scroll: scroll depth of the page
 4. user_engagement: user engagement time in seconds
+5. click: outbound link clicks
+6. file_download: registering file downloads
+7. add_payment_info: when a user chooses a payment method
+8. add_shipping_info: when a user chooses a shipping method
+9. login: when a user logins in the application
+10. sign_up: when a user signups
+11. share: social shares
+12. ga4_events: all other events that you created
 
 ## More resources
 1. [Piwik Pro HTTP API](https://developers.piwik.pro/en/latest/data_collection/api/http_api.html)
