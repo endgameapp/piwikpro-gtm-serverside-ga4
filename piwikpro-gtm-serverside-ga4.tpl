@@ -244,6 +244,7 @@ const buildRequest = (eventData) => {
   const user_agent = eventData.hasOwnProperty('user_agent') ? '&ua=' + encodeUriComponent(eventData.user_agent) : '';
   const screen_resolution = eventData.hasOwnProperty('screen_resolution') ? '&res=' + encodeUriComponent(eventData.screen_resolution) : '';
   const page_referrer = eventData.hasOwnProperty('page_referrer') ? '&urlref=' + encodeUriComponent(eventData.page_referrer) : '';
+  const lang = eventData.hasOwnProperty('lang') ? '&lang=' + encodeUriComponent(eventData.lang) : '';
   let requestPath = requestEndpoint + '?' +
         'rec=1' + '&' +
         'idsite=' + encodeUriComponent(data.siteID) + '&' +
@@ -251,7 +252,8 @@ const buildRequest = (eventData) => {
         ip_override +
         user_agent +
         screen_resolution +
-        page_referrer;
+        page_referrer +
+        lang;
   
   if (data.anonymousTracking == true) {
     requestPath += '&uia=1';
@@ -292,6 +294,53 @@ const buildRequest = (eventData) => {
         'ec_dt=' + encodeUriComponent(discount) + '&' +
         'ec_items=' + encodeUriComponent(items);
     }
+    /*
+    // CartUpdated / GA4: add_to_cart
+    case 'add_to_cart': {
+        const items = parseItems(eventData.items);
+        return requestPath + '&' +
+        'idgoal=0' + '&' +
+        'ec_items=' + encodeUriComponent(items);
+    }
+
+    // ContentImpression / GA4: view_item
+    case 'view_item': {
+        const items = parseItems(eventData.items);
+        return requestPath + '&' +
+        'action_name=' + encodeUriComponent(eventData.page_title) + '&' +
+        'ec_items=' + encodeUriComponent(items); 
+    }
+
+    // Search / GA4: search
+    case 'search':
+        return requestPath; 
+    
+    // ContentInteraction / GA4: select_item
+    case 'select_item':
+        return requestPath; 
+
+    case 'select_content':
+        return requestPath; 
+    
+    case 'select_promotion':
+        return requestPath; 
+  
+    case 'view_cart':
+        return requestPath; 
+  
+    case 'view_item_list':
+        return requestPath; 
+
+    case 'view_promotion':
+        return requestPath; 
+
+      case 'begin_checkout':
+        return requestPath; 
+
+    // GoalConversion / GA4: 
+    case 'goalconversion':
+        return requestPath; 
+    */
 
     // Custom / GA4: click
     case 'click': {
