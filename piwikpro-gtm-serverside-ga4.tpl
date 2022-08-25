@@ -110,7 +110,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "TEXT",
         "name": "UserID",
-        "displayName": "User ID (optional)",
+        "displayName": "Custom User ID",
         "simpleValueType": true,
         "enablingConditions": [
           {
@@ -561,6 +561,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 26/08/2022, 01:27:30
+Created on 26/08/2022, 01:28:30
 
 
