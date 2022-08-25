@@ -153,7 +153,7 @@ ___SANDBOXED_JS_FOR_SERVER___
 const getClientName = require('getClientName');
 const getAllEventData = require('getAllEventData');
 const sendHttpGet = require('sendHttpGet');
-const encodeUri = require('encodeUri');
+const encodeUriComponent = require('encodeUriComponent');
 const logToConsole = require('logToConsole');
 const JSON = require('JSON');
 
@@ -175,7 +175,7 @@ const parseCustomDimensions = (eventData, dimensionMappings) => {
       dimensionParams.push('&dimension' + 
                            mapping.ppDimensionID + 
                            '=' + 
-                           eventData[mapping.gaDimensionID]);
+                           encodeUriComponent(eventData[mapping.gaDimensionID]));
     } else {
       logToConsole(
         'Custom dimension (ID: ' + mapping.gaDimensionID + ') was not sent with the event.'
@@ -233,11 +233,11 @@ const buildRequest = (eventData) => {
   // Add common tracking request parameters (that won't change regardless of the event type)
   let requestPath = requestEndpoint + '?' +
         'rec=1' + '&' +
-        'idsite=' + data.siteID + '&' +
-        'url=' + eventData.page_location + '&' +
-        'cip=' + eventData.ip_override + '&' +
-        'ua=' + eventData.user_agent + '&' +
-        'res=' + eventData.screen_resolution;
+        'idsite=' + encodeUriComponent(data.siteID) + '&' +
+        'url=' + encodeUriComponent(eventData.page_location) + '&' +
+        'cip=' + encodeUriComponent(eventData.ip_override) + '&' +
+        'ua=' + encodeUriComponent(eventData.user_agent) + '&' +
+        'res=' + encodeUriComponent(eventData.screen_resolution);
   
   if (data.anonymousTracking == true) {
     requestPath += '&uia=1';
@@ -253,22 +253,24 @@ const buildRequest = (eventData) => {
     // PageView / GA4: page_view
     case 'page_view':
       return requestPath + '&' +
-        'action_name=' + eventData.page_title;
+        'action_name=' + encodeUriComponent(eventData.page_title);
     
     // OrderCompleted / GA4: purchase
     case 'purchase':
-      const subtotal = eventData.value - eventData.shipping;
+      const subtotal = eventData.hasOwnProperty('shipping') ? eventData.value - eventData.shipping : eventData.value;
+      const tax = eventData.hasOwnProperty('tax') ? eventData.tax : null;
+      const shipping = eventData.hasOwnProperty('shipping') ? eventData.shipping : null;
       const discount = parseDiscount(eventData.items);
       const items = parseItems(eventData.items);
       return requestPath + '&' +
         'idgoal=0' + '&' +
-        'revenue=' + eventData.value + '&' +
-        'ec_id=' + eventData.transaction_id + '&' +
-        'ec_st=' + subtotal + '&' +
-        'ec_tx=' + eventData.tax + '&' +
-        'ec_sh=' + eventData.shipping + '&' +
-        'ec_dt=' + discount + '&' +
-        'ec_items=' + items;
+        'revenue=' + encodeUriComponent(eventData.value) + '&' +
+        'ec_id=' + encodeUriComponent(eventData.transaction_id) + '&' +
+        'ec_st=' + encodeUriComponent(subtotal) + '&' +
+        'ec_tx=' + encodeUriComponent(tax) + '&' +
+        'ec_sh=' + encodeUriComponent(shipping) + '&' +
+        'ec_dt=' + encodeUriComponent(discount) + '&' +
+        'ec_items=' + encodeUriComponent(items);
     /*
     // Search / GA4: search
     case 'search':
@@ -309,9 +311,9 @@ const buildRequest = (eventData) => {
     // Custom events the same event type as the event action parameter
     case eventData.event_action:
       return requestPath + '&' +
-        'e_c=' + eventData.event_category + '&' +
-        'e_a=' + eventData.event_action + '&' +
-        'e_n=' + eventData.event_label;
+        'e_c=' + encodeUriComponent(eventData.event_category) + '&' +
+        'e_a=' + encodeUriComponent(eventData.event_action) + '&' +
+        'e_n=' + encodeUriComponent(eventData.event_label);
   }
 };
 
@@ -319,7 +321,7 @@ const buildRequest = (eventData) => {
 const requestPath = buildRequest(eventData);
 
 // Build the full URL for sending the request
-const url = data.accountURL + encodeUri(requestPath);
+const url = data.accountURL + requestPath;
 
 // The sendHttpGet API takes a URL and a result callback. You must call
 // data.gtmOnSuccess() or data.gtmOnFailure() so that the container knows when
