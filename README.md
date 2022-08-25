@@ -1,5 +1,5 @@
 # Piwik Pro GTM server-side with ecommerce-events (GA4-based)
-A tag template for Piwik Pro server-side tracking inside Google Tag Manager with full support of popular ecommerce events based on the default Google Analytics 4 implementation specifications. If you are looking for a Piwik Pro server-side template based on Universal Analytics, please [take a look here](https://github.com/PiwikPRO/server-side-template-for-gtm).
+A tag template for Piwik Pro server-side tracking inside Google Tag Manager with full support of popular ecommerce events based on the default Google Analytics 4 implementation specifications. Note: the repository of [Piwik Pro server-side template based on Universal Analytics](https://github.com/PiwikPRO/server-side-template-for-gtm) is located here.
 
 ## How to implement the tag
 We assume that you already have enough knowledge about server-side Google Tag Manager to implement the tag. Below you can find the steps to enable this template inside your container.
