@@ -30,7 +30,7 @@ We have mapped the following default GA4 events (based on [this](https://develop
 
 ## Custom events (all your remaining GA4 events)
 Additionally, you can use the mapping settings inside the tag settings to provide Piwik with the right Event Category, Action and Value. If the GA4 event is not mapped but still send to Piwik Pro, then it will get listed under Event Category 'ga4_events' with the event name set as Event Action.
-1. Enable the 'Custom event mapping setting'
+1. Enable the 'Custom event mapping' setting
 2. Provide the Google Analytics 4 event name in the first column
 3. Enter columns Event Categy (required), Action (required), Value (optional) in plain text or choose a variable (e.g. event data)
 4. Save, test & publish your server-side container
