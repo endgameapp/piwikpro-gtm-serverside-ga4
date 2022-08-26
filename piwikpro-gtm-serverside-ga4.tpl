@@ -384,7 +384,7 @@ const buildRequest = (eventData) => {
       let PPEventValue = 'didntset';
       eventMappings.forEach((eventmapping) => {
           // Check if event is inside the mapped events table
-          if (eventName == eventmapping.gaEventName) {
+          if (eventData.event_name == eventmapping.gaEventName) {
              if (typeof(eventmapping.ppEventNameD) != "undefined") { PPEventName = eventmapping.ppEventName; }
              if (typeof(eventmapping.PPEventAction) != "undefined") { PPEventAction = eventmapping.ppEventAction; }
              if (typeof(eventmapping.PPEventCategory) != "undefined") { PPEventCategory = eventmapping.ppEventCategory; }
