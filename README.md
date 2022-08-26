@@ -54,7 +54,9 @@ Google Analytics 4 is measuring several events that you might not want to send t
 
 ## TODO list
 - Carts: Everything related to cart updates will not work well since GA4 works with additional event updates (add, remove) where Piwik PRO only allows to update the entire cart contains (update). Since the entire contents of the cart during a session are unknown in GA4 events this will not work correctly. Therefore, add_to_cart, remove_from_cart are implemented as custom events at the moment. Waiting for Piwik PRO to provide better support in the mean time (not sure if this will be on the roadmap of Piwik PRO).
-- Promotions: view_promotion and select_promotion. This can be tracked with the ContentInteraction event by setting c_i and c_n parameters.
+- Promotions: view_promotion and select_promotion events. This can be tracked with the ContentInteraction event by setting c_i and c_n parameters.
+- Search: search and view_search_results events. Piwik PRO is handeling some searches already automatically but it would be wise to extend this and make sure that autocomplete search behavior is also tracked (datalayer will contain 'search_terms' as parameter).
+- Select: select_item and select_content events. This can be tracked with the ContentInteraction event by setting c_i and c_n parameters. Currently, select_item is implemented as custom event.
 
 ## Support with server-side tagging
 In case you need professional help with setting up server-side tagging inside Google Tag Manager you can [contact me here](https://dennisvreeke.com).
