@@ -427,6 +427,97 @@ const buildRequest = (eventData) => {
         'ec_items=' + encodeUriComponent(items);
     }
 
+    /*
+    // PP: CartUpdated / GA4: add_to_cart : this code will be error prone so right now not providing support for carts
+    case 'add_to_cart': {
+        const items = parseItems(eventData.items);
+        return requestPath + '&' +
+        'idgoal=0' + '&' +
+        'ec_items=' + encodeUriComponent(items);
+    }
+    */
+/*
+    // PP: PageView / GA4: view_item
+    case 'view_item': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('select_item') +
+        items +
+        value;
+      return requestPath + '&' +
+        'action_name=' + encodeUriComponent(eventData.page_title);
+    }
+  
+    // PP: PageView / GA4: view_item_list
+    case 'view_item_list': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('select_item') +
+        items +
+        value;
+      return requestPath + '&' +
+        'action_name=' + encodeUriComponent(eventData.page_title);
+    }
+
+    // PP: Custom / GA4: select_item
+    case 'select_item': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('select_item') +
+        items +
+        value;
+    }
+
+    // PP: Custom / GA4: add_to_cart
+    case 'add_to_cart': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('add_to_cart') +
+        items +
+        value;
+    }
+
+    // PP: Custom / GA4: remove_from_cart
+    case 'remove_from_cart': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('remove_from_cart') +
+        items +
+        value;
+    }
+
+    // PP: Custom / GA4: begin_checkout
+    case 'begin_checkout': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('begin_checkout') +
+        items +
+        value;
+    }
+
+    // PP: Custom / GA4: view_cart
+    case 'view_cart': {
+      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+        'e_a=' + encodeUriComponent('view_cart') +
+        items +
+        value;
+    }
+*/
     // PP: Custom / GA4: click
     case 'click': {
       return requestPath + '&' +
