@@ -18,8 +18,6 @@ We assume that you already have enough knowledge about server-side Google Tag Ma
 We have mapped the following default GA4 events (based on [this](https://developers.google.com/analytics/devguides/collection/ga4/reference/events) and [this](https://support.google.com/analytics/answer/9234069?hl=en&ref_topic=9756175) list) to the format of Piwik PRO. All other events will be considered custom Piwik Pro events and can be mapped with the values you prefer. 
 - page_view: generic page view events
 - purchase: ecommerce transactions
-- view_cart: when a user views the cart
-- begin_checkout: when a user views the checkout
 - add_payment_info: when a user chooses a payment method
 - add_shipping_info: when a user chooses a shipping method
 - scroll: scroll depth of the page
