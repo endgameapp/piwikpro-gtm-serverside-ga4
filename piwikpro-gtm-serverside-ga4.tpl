@@ -129,15 +129,21 @@ ___TEMPLATE_PARAMETERS___
       },
       {
         "type": "PARAM_TABLE",
-        "name": "eventMapping",
+        "name": "eventMappings",
         "displayName": "Custom event mapping",
         "paramTableColumns": [
           {
             "param": {
               "type": "TEXT",
               "name": "gaEventName",
-              "displayName": "GA4 Event Name",
-              "simpleValueType": true
+              "displayName": "GA4 Event Name *",
+              "simpleValueType": true,
+              "help": "The name of the event send by Google Analytics 4 client tag.",
+              "valueValidators": [
+              {
+               "type": "NON_EMPTY"
+              }
+              ]
             },
             "isUnique": true
           },
@@ -145,7 +151,8 @@ ___TEMPLATE_PARAMETERS___
             "param": {
               "type": "TEXT",
               "name": "ppEventCategory",
-              "displayName": "Piwik PRO Event Category",
+              "displayName": "Piwik PRO Event Category *",
+              "help": "Most likely this will be the same value as your GA4 Event Name.",
               "simpleValueType": true
             },
             "isUnique": false
@@ -154,7 +161,18 @@ ___TEMPLATE_PARAMETERS___
             "param": {
               "type": "TEXT",
               "name": "ppEventAction",
-              "displayName": "Piwik PRO Event Action",
+              "displayName": "Piwik PRO Event Action *",
+              "help": "The specific action for your Event Category (could also be the GA4 Event Name in some cases).",
+              "simpleValueType": true
+            },
+            "isUnique": false
+          },
+          {
+            "param": {
+              "type": "TEXT",
+              "name": "ppEventName",
+              "displayName": "Piwik PRO Event Name",
+              "help": "The specific name for your Event. Formerly known as Event Label in Google Analytics.",
               "simpleValueType": true
             },
             "isUnique": false
@@ -164,6 +182,7 @@ ___TEMPLATE_PARAMETERS___
               "type": "TEXT",
               "name": "ppEventValue",
               "displayName": "Piwik PRO Event Value",
+              "help": "This should be a number. It can be used to calculate Event Values.",
               "simpleValueType": true
             },
             "isUnique": false
@@ -177,7 +196,7 @@ ___TEMPLATE_PARAMETERS___
           }
         ],
         "newRowButtonText": "Add an event mapping",
-        "help": "You can use event mapping to provide Piwik with the right values for Event Category, Event Action and Event Value. If the GA4 event is not mapped but still send to Piwik Pro, then it will get listed under Event Category \u0027ga4_events\u0027 with the event name set as Event Action.",
+        "help": "You can use event mapping to provide Piwik with the right values for Event Category, Event Action, Event Name and Event Value. If the GA4 event is not mapped but still send to Piwik Pro, then it will get listed under Event Category \u0027ga4_events\u0027 with the event name set as Event Action.",
         "newRowTitle": "Add an event mapping"
       },
       {
@@ -281,7 +300,7 @@ const parseDiscount = (items) => {
 const parseItems = (items) => {
   var parsedItems = [];
   items.forEach(item => {
-    let reformattedItem = [];
+		let reformattedItem = [];
     reformattedItem.push(item.item_id);
     reformattedItem.push(item.item_name);
 
@@ -304,9 +323,22 @@ const parseItems = (items) => {
   return JSON.stringify(parsedItems);
 };
 
+// Decide if the event is inside the custom event mappings
+const isMappedEvent = (eventName) => {
+  const eventMappings = data.eventMappings;
+  let theEventName = eventName;
+        eventMappings.forEach((eventmapping) => {
+          // Check if event is inside the mapped events table
+          if (eventName == eventmapping.gaEventName) {
+            theEventName = 'mapped_event';
+          } 
+        });
+  return theEventName;
+};
+
 // Build an analytics request for different event types
 const buildRequest = (eventData) => {
-  const eventType = eventData.event_name;
+  const eventType = isMappedEvent(eventData.event_name);
   
   // It's possible to customise the tracking endpoint. The default option is ppms.php
   const requestEndpoint = data.useDefaultEndpoint ? 'ppms.php' : data.customEndpoint;
@@ -343,13 +375,40 @@ const buildRequest = (eventData) => {
   
   // Add additional parameters specific to particular event types
   switch (eventType) {
-    // PageView / GA4: page_view
+    // PP: Custom / Mapped Event => Mapped events get highest priority and overrule default settings
+    case 'mapped_event': {
+      const eventMappings = data.eventMappings;
+      let PPEventName = 'didntset';
+      let PPEventAction = 'didntset';
+      let PPEventCategory = 'didntset';
+      let PPEventValue = 'didntset';
+      eventMappings.forEach((eventmapping) => {
+          // Check if event is inside the mapped events table
+          if (eventName == eventmapping.gaEventName) {
+             if (typeof(eventmapping.ppEventNameD) != "undefined") { PPEventName = eventmapping.ppEventName; }
+             if (typeof(eventmapping.PPEventAction) != "undefined") { PPEventAction = eventmapping.ppEventAction; }
+             if (typeof(eventmapping.PPEventCategory) != "undefined") { PPEventCategory = eventmapping.ppEventCategory; }
+             if (typeof(eventmapping.PPEventValue) != "undefined") { PPEventValue = eventmapping.ppEventValue; }
+          } 
+      });
+      const value = PPEventValue != 'didntset' ? '&e_v=' + encodeUriComponent(PPEventValue) : '';
+      const event_name = PPEventName != 'didntset' ? '&e_n=' + encodeUriComponent(PPEventName) : '';
+      const event_action = PPEventAction != 'didntset' ? PPEventAction : null;
+      const event_category = PPEventCategory != 'didntset' ? PPEventCategory : null;
+      return requestPath + '&' +
+        'e_c=' + encodeUriComponent(event_category) + '&' +
+        'e_a=' + encodeUriComponent(event_action) + 
+        event_name +
+        value;
+    }
+
+    // PP: PageView / GA4: page_view
     case 'page_view': {
       return requestPath + '&' +
         'action_name=' + encodeUriComponent(eventData.page_title);
     }
     
-    // OrderCompleted / GA4: purchase
+    // PP: OrderCompleted / GA4: purchase
     case 'purchase': {
       const value = eventData.hasOwnProperty('value') ? encodeUriComponent(eventData.value) : 0;
       const tax = eventData.hasOwnProperty('tax') ? encodeUriComponent(eventData.tax) : 0;
@@ -368,19 +427,19 @@ const buildRequest = (eventData) => {
         'ec_items=' + encodeUriComponent(items);
     }
 
-    // Custom / GA4: click
+    // PP: Custom / GA4: click
     case 'click': {
       return requestPath + '&' +
         'link=' + encodeUriComponent(eventData.link_url);
     }
 
-    // Custom / GA4: file_download
+    // PP: Custom / GA4: file_download
     case 'file_download': {
       return requestPath + '&' +
         'download=' + encodeUriComponent(eventData.link_url);
     }
 
-    // Custom / GA4: add_payment_info
+    // PP: Custom / GA4: add_payment_info
     case 'add_payment_info': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
       const payment_type = eventData.hasOwnProperty('payment_type') ? eventData.payment_type : 'Default payment method';
@@ -390,7 +449,7 @@ const buildRequest = (eventData) => {
         value;
     }
 
-    // Custom / GA4: add_shipping_info
+    // PP: Custom / GA4: add_shipping_info
     case 'add_shipping_info': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
       const shipping_tier = eventData.hasOwnProperty('shipping_tier') ? eventData.shipping_tier : 'Default shipping method';
@@ -400,7 +459,7 @@ const buildRequest = (eventData) => {
         value;
     }
 
-    // Custom / GA4: login
+    // PP: Custom / GA4: login
     case 'login': {
       const method = eventData.hasOwnProperty('method') ? eventData.method : 'Default login method';
       return requestPath + '&' +
@@ -408,7 +467,7 @@ const buildRequest = (eventData) => {
         'e_a=' + encodeUriComponent(method);
     }
 
-    // Custom / GA4: sign_up
+    // PP: Custom / GA4: sign_up
     case 'sign_up': {
       const method = eventData.hasOwnProperty('method') ? eventData.method : 'Default signup method';
       return requestPath + '&' +
@@ -416,7 +475,7 @@ const buildRequest = (eventData) => {
         'e_a=' + encodeUriComponent(method);
     }
 
-    // Custom / GA4: share
+    // PP: Custom / GA4: share
     case 'share': {
       const method = eventData.hasOwnProperty('method') ? eventData.method : 'Default share method';
       const content_type = eventData.hasOwnProperty('content_type') ? eventData.content_type : '';
@@ -429,7 +488,7 @@ const buildRequest = (eventData) => {
         name;
     }
 
-    // Custom / GA4: user_engagement
+    // PP: Custom / GA4: user_engagement
     case 'user_engagement': {
       const engagement_time_msec = eventData.hasOwnProperty('engagement_time_msec') ? Math.round(eventData.engagement_time_msec / 1000) + ' seconds' : null;
       return requestPath + '&' +
@@ -437,7 +496,7 @@ const buildRequest = (eventData) => {
         'e_a=' + encodeUriComponent(engagement_time_msec);
     }
     
-    // Custom / GA4: scroll
+    // PP: Custom / GA4: scroll
     case 'scroll': {
       const percent_scrolled = eventData.hasOwnProperty('percent_scrolled') ? eventData.percent_scrolled + '%' : null;
       return requestPath + '&' +
@@ -445,14 +504,14 @@ const buildRequest = (eventData) => {
         'e_a=' + encodeUriComponent(percent_scrolled);
     }
     
-    // Custom / GA4: [anything else]
+    // PP: Custom / GA4: [anything else]
     case eventData.event_name: {
-      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const event_name = eventData.hasOwnProperty('event_name') ? eventData.event_name : null;
-      return requestPath + '&' +
-        'e_c=' + encodeUriComponent('ga4_events') + '&' +
-        'e_a=' + encodeUriComponent(event_name) + 
-        value;
+        const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+        const event_name = eventData.hasOwnProperty('event_name') ? eventData.event_name : null;
+        return requestPath + '&' +
+          'e_c=' + encodeUriComponent('ga4_events') + '&' +
+          'e_a=' + encodeUriComponent(event_name) + 
+          value;
     }
   }
 };
