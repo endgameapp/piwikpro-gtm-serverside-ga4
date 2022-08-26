@@ -51,7 +51,7 @@ Google Analytics 4 is measuring several events that you might not want to send t
 5. [A complete guide to server-side tagging](https://www.simoahava.com/analytics/server-side-tagging-google-tag-manager/)
 
 ## TODO list
-Coming soon...
+Carts: Everything related to cart updates will not work well since GA4 works with additional event updates (add, remove) where Piwik PRO only allows to update the entire cart contains (update). Since the entire contents of the cart during a session are unknown in GA4 events this will not work correctly. Therefore, add_to_cart, remove_from_cart are implemented as custom events at the moment. Waiting for Piwik PRO to provide better support in the mean time (not sure if this will be on the roadmap of Piwik PRO).
 
 ## Support with server-side tagging
 In case you need professional help with setting up server-side tagging inside Google Tag Manager you can [contact me here](https://dennisvreeke.com).
