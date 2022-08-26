@@ -16,17 +16,19 @@ We assume that you already have enough knowledge about server-side Google Tag Ma
 
 ## Default GA4 events
 We have mapped the following default GA4 events (based on [this](https://developers.google.com/analytics/devguides/collection/ga4/reference/events) and [this](https://support.google.com/analytics/answer/9234069?hl=en&ref_topic=9756175) list) to the format of Piwik PRO. All other events will be considered custom Piwik Pro events and can be mapped with the values you prefer. 
-1. page_view: generic page view events
-2. purchase: ecommerce transactions
-3. scroll: scroll depth of the page
-4. user_engagement: user engagement time in seconds
-5. click: outbound link clicks
-6. file_download: registering file downloads
-7. add_payment_info: when a user chooses a payment method
-8. add_shipping_info: when a user chooses a shipping method
-9. login: when a user logins in the application
-10. sign_up: when a user signups
-11. share: social shares
+- page_view: generic page view events
+- purchase: ecommerce transactions
+- view_cart: when a user views the cart
+- begin_checkout: when a user views the checkout
+- add_payment_info: when a user chooses a payment method
+- add_shipping_info: when a user chooses a shipping method
+- scroll: scroll depth of the page
+- user_engagement: user engagement time in seconds
+- click: outbound link clicks
+- file_download: registering file downloads
+- login: when a user logins in the application
+- sign_up: when a user signups
+- share: social shares
 
 ## Custom events (all your remaining GA4 events)
 Additionally, you can use the mapping settings inside the tag settings to provide Piwik PRO with the right Event Category, Action and Value. If the GA4 event is not mapped but still send to Piwik Pro, then it will get listed under Event Category 'ga4_events' with the event name set as Event Action.
