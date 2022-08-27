@@ -488,13 +488,13 @@ const buildRequest = (eventData) => {
     case 'begin_checkout': {
       // We could update the cart at this stage but it might be unreliable so let's do a custom event. In case you want to update the cart instead then please remove the e_c, e_v, e_n, e_a parameters from this request.
       const update_cart = eventData.hasOwnProperty('items') ? '&idgoal=0' + '&' + 'ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
-      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+//      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
+//      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
-        'e_c=' + encodeUriComponent('ecommerce') + '&' +
-        'e_a=' + encodeUriComponent('begin_checkout') +
-        event_name +
-        value + 
+//        'e_c=' + encodeUriComponent('ecommerce') + '&' +
+//        'e_a=' + encodeUriComponent('begin_checkout') +
+//        event_name +
+//        value + 
         update_cart;
     }
 
