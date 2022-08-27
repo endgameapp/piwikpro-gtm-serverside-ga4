@@ -429,97 +429,86 @@ const buildRequest = (eventData) => {
         'ec_items=' + encodeUriComponent(items);
     }
 
-    /*
-    // PP: CartUpdated / GA4: add_to_cart : this code will be error prone so right now not providing support for carts
-    case 'add_to_cart': {
-        const items = parseItems(eventData.items);
-        return requestPath + '&' +
-        'idgoal=0' + '&' +
-        'ec_items=' + encodeUriComponent(items);
-    }
-    */
-/*
-    // PP: PageView / GA4: view_item
+    // PP: Custom / GA4: view_item
     case 'view_item': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
-        'e_a=' + encodeUriComponent('select_item') +
-        items +
+        'e_a=' + encodeUriComponent('view_item') +
+        event_name +
         value;
-      return requestPath + '&' +
-        'action_name=' + encodeUriComponent(eventData.page_title);
     }
   
-    // PP: PageView / GA4: view_item_list
+    // PP: Custom / GA4: view_item_list
     case 'view_item_list': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('item_list_name') ? '&e_n=' + parseItems(eventData.item_list_name) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
-        'e_a=' + encodeUriComponent('select_item') +
-        items +
+        'e_a=' + encodeUriComponent('view_item_list') +
+        event_name +
         value;
-      return requestPath + '&' +
-        'action_name=' + encodeUriComponent(eventData.page_title);
     }
 
     // PP: Custom / GA4: select_item
     case 'select_item': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('select_item') +
-        items +
+        event_name +
         value;
     }
 
     // PP: Custom / GA4: add_to_cart
     case 'add_to_cart': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('add_to_cart') +
-        items +
+        event_name +
         value;
     }
 
     // PP: Custom / GA4: remove_from_cart
     case 'remove_from_cart': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('remove_from_cart') +
-        items +
+        event_name +
         value;
     }
 
     // PP: Custom / GA4: begin_checkout
     case 'begin_checkout': {
+      // We can assume that the entire cart contents is loaded at this stage inside the items object. This allows for abandoned cart measurement. However, if the checkout page allows to add or remove products the measurement wont be correct
+      const update_cart = eventData.hasOwnProperty('items') ? 'idgoal=0' + '&' + 'ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('begin_checkout') +
-        items +
+        update_cart +
+        event_name +
         value;
     }
 
     // PP: Custom / GA4: view_cart
     case 'view_cart': {
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
-      const items = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
+      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('view_cart') +
-        items +
+        event_name +
         value;
     }
-*/
+
     // PP: Custom / GA4: click
     case 'click': {
       return requestPath + '&' +
@@ -573,12 +562,12 @@ const buildRequest = (eventData) => {
       const method = eventData.hasOwnProperty('method') ? eventData.method : 'Default share method';
       const content_type = eventData.hasOwnProperty('content_type') ? eventData.content_type : '';
       const item_id = eventData.hasOwnProperty('item_id') ? eventData.item_id : '';
-      let name = content_type + item_id;
-      if(name != '') { name = '&e_n=' + encodeUriComponent(name); } else { name = ''; }
+      let event_name = content_type + ' ' + item_id;
+      if(event_name != '') { event_name = '&e_n=' + encodeUriComponent(event_name); } else { event_name = ''; }
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('share') + '&' +
         'e_a=' + encodeUriComponent(method) +
-        name;
+        event_name;
     }
 
     // PP: Custom / GA4: user_engagement
