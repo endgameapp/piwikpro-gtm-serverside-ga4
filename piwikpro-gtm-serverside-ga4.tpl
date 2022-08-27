@@ -486,16 +486,16 @@ const buildRequest = (eventData) => {
 
     // PP: Custom / GA4: begin_checkout
     case 'begin_checkout': {
-      // We can assume that the entire cart contents is loaded at this stage inside the items object. This allows for abandoned cart measurement. However, if the checkout page allows to add or remove products the measurement wont be correct
-      const update_cart = eventData.hasOwnProperty('items') ? 'idgoal=0' + '&' + 'ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
+      // We could update the cart at this stage but it might be unreliable so let's do a custom event. In case you want to update the cart instead then please remove the e_c, e_v, e_n, e_a parameters from this request.
+      const update_cart = eventData.hasOwnProperty('items') ? '&idgoal=0' + '&' + 'ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
       const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
       const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
         'e_c=' + encodeUriComponent('ecommerce') + '&' +
         'e_a=' + encodeUriComponent('begin_checkout') +
-        update_cart +
         event_name +
-        value;
+        value + 
+        update_cart;
     }
 
     // PP: Custom / GA4: view_cart
