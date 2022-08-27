@@ -18,6 +18,12 @@ We assume that you already have enough knowledge about server-side Google Tag Ma
 We have mapped the following default GA4 events (based on [this](https://developers.google.com/analytics/devguides/collection/ga4/reference/events) and [this](https://support.google.com/analytics/answer/9234069?hl=en&ref_topic=9756175) list) to the format of Piwik PRO. All other events will be considered custom Piwik Pro events and can be mapped with the values you prefer. 
 - page_view: generic page view events
 - purchase: ecommerce transactions
+- view_item: product page views
+- view_item_list: category page views
+- select_item: when an item is clicked in a listing page
+- add_to_cart: when a product is added to the cart
+- remove_from_cart: when a product is removed from the cart
+- view_cart: when the cart page is viewed
 - add_payment_info: when a user chooses a payment method
 - add_shipping_info: when a user chooses a shipping method
 - scroll: scroll depth of the page
@@ -27,6 +33,7 @@ We have mapped the following default GA4 events (based on [this](https://develop
 - login: when a user logins in the application
 - sign_up: when a user signups
 - share: social shares
+- begin_checkout: this will be measured as a cart update because we will know the entire contents of the cart at this stage. Assumption is that the cart contents cannot be changed in the checkout page, otherwise the data will be not reliable. If your shop does allow to change the cart contents in the checkout page then please uncomment the commented lines in the template code near the begin_checkout event. We will measure begin_checkout as custom event in such a case.
 
 ## Custom events (all your remaining GA4 events)
 Additionally, you can use the mapping settings inside the tag settings to provide Piwik PRO with the right Event Category, Action and Value. If the GA4 event is not mapped but still send to Piwik Pro, then it will get listed under Event Category 'ga4_events' with the event name set as Event Action.
