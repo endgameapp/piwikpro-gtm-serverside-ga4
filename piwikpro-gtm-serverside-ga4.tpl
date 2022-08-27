@@ -325,14 +325,16 @@ const parseItems = (items) => {
 
 // Decide if the event is inside the custom event mappings
 const isMappedEvent = (eventName) => {
-  const eventMappings = data.eventMappings;
   let theEventName = eventName;
+  if (data.setEventMapping == true) {
+        const eventMappings = data.eventMappings;
         eventMappings.forEach((eventmapping) => {
           // Check if event is inside the mapped events table
           if (eventName == eventmapping.gaEventName) {
             theEventName = 'mapped_event';
           } 
         });
+  }
   return theEventName;
 };
 
@@ -385,10 +387,10 @@ const buildRequest = (eventData) => {
       eventMappings.forEach((eventmapping) => {
           // Check if event is inside the mapped events table
           if (eventData.event_name == eventmapping.gaEventName) {
-             if (typeof(eventmapping.ppEventNameD) != "undefined") { PPEventName = eventmapping.ppEventName; }
-             if (typeof(eventmapping.PPEventAction) != "undefined") { PPEventAction = eventmapping.ppEventAction; }
-             if (typeof(eventmapping.PPEventCategory) != "undefined") { PPEventCategory = eventmapping.ppEventCategory; }
-             if (typeof(eventmapping.PPEventValue) != "undefined") { PPEventValue = eventmapping.ppEventValue; }
+             if (typeof(eventmapping.ppEventName) != "undefined") { PPEventName = eventmapping.ppEventName; }
+             if (typeof(eventmapping.ppEventAction) != "undefined") { PPEventAction = eventmapping.ppEventAction; }
+             if (typeof(eventmapping.ppEventCategory) != "undefined") { PPEventCategory = eventmapping.ppEventCategory; }
+             if (typeof(eventmapping.ppEventValue) != "undefined") { PPEventValue = eventmapping.ppEventValue; }
           } 
       });
       const value = PPEventValue != 'didntset' ? '&e_v=' + encodeUriComponent(PPEventValue) : '';
