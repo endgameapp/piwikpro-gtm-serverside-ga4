@@ -384,6 +384,8 @@ const buildRequest = (eventData) => {
       let PPEventAction = 'didntset';
       let PPEventCategory = 'didntset';
       let PPEventValue = 'didntset';
+      let event_name = '';
+      let value = '';
       eventMappings.forEach((eventmapping) => {
           // Check if event is inside the mapped events table
           if (eventData.event_name == eventmapping.gaEventName) {
@@ -393,8 +395,8 @@ const buildRequest = (eventData) => {
              if (typeof(eventmapping.ppEventValue) != "undefined") { PPEventValue = eventmapping.ppEventValue; }
           } 
       });
-      if(PPEventValue != 'didntset' && PPEventValue != '') { const value = '&e_v=' + encodeUriComponent(PPEventValue); } else { const value = ''; }
-      if(PPEventName != 'didntset' && PPEventName != '') { const event_name = '&e_n=' + encodeUriComponent(PPEventName); } else { const event_name = ''; }
+      if(PPEventValue != 'didntset' && PPEventValue != '') { value = '&e_v=' + encodeUriComponent(PPEventValue); } else { value = ''; }
+      if(PPEventName != 'didntset' && PPEventName != '') { event_name = '&e_n=' + encodeUriComponent(PPEventName); } else { event_name = ''; }
       const event_action = PPEventAction != 'didntset' ? PPEventAction : null;
       const event_category = PPEventCategory != 'didntset' ? PPEventCategory : null;
       return requestPath + '&' +
