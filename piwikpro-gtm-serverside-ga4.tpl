@@ -487,7 +487,8 @@ const buildRequest = (eventData) => {
     // PP: Custom / GA4: begin_checkout
     case 'begin_checkout': {
       // We could update the cart at this stage but it might be unreliable so let's do a custom event. In case you want to update the cart instead then please remove the e_c, e_v, e_n, e_a parameters from this request.
-      const update_cart = eventData.hasOwnProperty('items') ? '&idgoal=0' + '&' + 'ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
+      const items = eventData.hasOwnProperty('items') ? '&ec_items=' + encodeUriComponent(parseItems(eventData.items)) : '';
+      const revenue = eventData.hasOwnProperty('value') ? '&revenue=' + encodeUriComponent(eventData.value) : '';
 //      const value = eventData.hasOwnProperty('value') ? '&e_v=' + encodeUriComponent(eventData.value) : '';
 //      const event_name = eventData.hasOwnProperty('items') ? '&e_n=' + parseItems(eventData.items) : '';
       return requestPath + '&' +
@@ -495,7 +496,9 @@ const buildRequest = (eventData) => {
 //        'e_a=' + encodeUriComponent('begin_checkout') +
 //        event_name +
 //        value + 
-        update_cart;
+	'&idgoal=0' +
+        items +
+	revenue;
     }
 
     // PP: Custom / GA4: view_cart
