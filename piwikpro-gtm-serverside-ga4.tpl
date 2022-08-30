@@ -393,8 +393,8 @@ const buildRequest = (eventData) => {
              if (typeof(eventmapping.ppEventValue) != "undefined") { PPEventValue = eventmapping.ppEventValue; }
           } 
       });
-      const value = PPEventValue != 'didntset' ? '&e_v=' + encodeUriComponent(PPEventValue) : '';
-      const event_name = PPEventName != 'didntset' ? '&e_n=' + encodeUriComponent(PPEventName) : '';
+      if(PPEventValue != 'didntset' && PPEventValue != '') { const value = '&e_v=' + encodeUriComponent(PPEventValue); } else { const value = ''; }
+      if(PPEventName != 'didntset' && PPEventName != '') { const event_name = '&e_n=' + encodeUriComponent(PPEventName); } else { const event_name = ''; }
       const event_action = PPEventAction != 'didntset' ? PPEventAction : null;
       const event_category = PPEventCategory != 'didntset' ? PPEventCategory : null;
       return requestPath + '&' +
