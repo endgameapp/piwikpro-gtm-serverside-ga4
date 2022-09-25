@@ -346,7 +346,7 @@ const buildRequest = (eventData) => {
   const requestEndpoint = data.useDefaultEndpoint ? 'ppms.php' : data.customEndpoint;
   
   // Add common tracking request parameters (that won't change regardless of the event type)
-  const client_id = eventData.hasOwnProperty('x-ga-js_client_id') ? '&uid=' + encodeUriComponent(eventData.x-ga-js_client_id) : '';
+  const client_id = eventData.hasOwnProperty('client_id') ? '&uid=' + encodeUriComponent(eventData.client_id) : '';
   const page_location = eventData.hasOwnProperty('page_location') ? '&url=' + encodeUriComponent(eventData.page_location) : '';
   const ip_override = eventData.hasOwnProperty('ip_override') ? '&cip=' + encodeUriComponent(eventData.ip_override) : '';
   const user_agent = eventData.hasOwnProperty('user_agent') ? '&ua=' + encodeUriComponent(eventData.user_agent) : '';
