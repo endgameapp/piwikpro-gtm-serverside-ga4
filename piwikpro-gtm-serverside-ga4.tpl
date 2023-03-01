@@ -355,7 +355,7 @@ const buildRequest = (eventData) => {
   const lang = eventData.hasOwnProperty('lang') ? '&lang=' + encodeUriComponent(eventData.lang) : '';
   let requestPath = requestEndpoint + '?' +
         'rec=1' + '&' +
-        'idsite=' + encodeUriComponent(data.siteID) + '&' +
+        'idsite=' + encodeUriComponent(data.siteID) +
         page_location +
         ip_override +
         user_agent +
