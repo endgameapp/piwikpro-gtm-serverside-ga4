@@ -348,7 +348,7 @@ const buildRequest = (eventData) => {
   // Add common tracking request parameters (that won't change regardless of the event type)
   const client_id = eventData.hasOwnProperty('client_id') ? '&uid=' + encodeUriComponent(eventData.client_id) : '';
   const page_location = eventData.hasOwnProperty('page_location') ? '&url=' + encodeUriComponent(eventData.page_location) : '';
-  const ip_override = eventData.hasOwnProperty('ip_override') ? '&cip=' + encodeUriComponent(eventData.ip_override) : '';
+  const ip_override = eventData.hasOwnProperty('ip_override') ? '&cip=' + encodeUriComponent(eventData.ip_override.split(':').shift()) : '';
   const user_agent = eventData.hasOwnProperty('user_agent') ? '&ua=' + encodeUriComponent(eventData.user_agent) : '';
   const screen_resolution = eventData.hasOwnProperty('screen_resolution') ? '&res=' + encodeUriComponent(eventData.screen_resolution) : '';
   const page_referrer = eventData.hasOwnProperty('page_referrer') ? '&urlref=' + encodeUriComponent(eventData.page_referrer) : '';
